@@ -103,6 +103,33 @@ $(document).ready(function() {
           // render all todos to view
           render();
         }
+      })
+      .on('submit', '.search-todo', function (event) {
+      event.preventDefault();
+
+      // find the todo's id (stored in HTML as `data-id`)
+      var todoId = $(this).closest('.todo').attr('data-id');
+
+      // find the todo to update by its id
+      var todoToUpdate = allTodos.filter(function (todo) {
+        return todo._id == todoId;
+      })[0];
+      
+      // serialze form data
+      var updatedTodo = $(this).serialize();
+
+      // PUT request to update todo
+      $.ajax({
+        type: 'PUT',
+        url: baseUrl + '/' + todoId,
+        data: updatedTodo,
+        success: function onUpdateSuccess(json) {
+          // replace todo to update with newly updated version (json)
+          allTodos.splice(allTodos.indexOf(todoToUpdate), 1, json);
+
+          // render all todos to view
+          render();
+        }
       });
     })
 
